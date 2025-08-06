@@ -31,7 +31,14 @@ public class RawFolderPageServer implements PageServer {
 //		String[] parts = uri.split("/");
 //
 //		String lastSegment = parts.length > 0 ? parts[parts.length - 1] : "";
-		uri = uri.replaceFirst(Pattern.quote(key), Matcher.quoteReplacement(""));
+		String nkey = key;
+		if (nkey.endsWith("*")) nkey = nkey.substring(0, nkey.length()-1);
+		uri = uri.replaceFirst(Pattern.quote(nkey), Matcher.quoteReplacement(""));
+		
+		if (uri.isBlank()||uri.equals("/")) uri = "index.html";
+
+		System.out.println(uri);
+		System.out.println(nkey);
 		
 		return Files.readAllBytes(new File(sourcefolder + "/" + uri).toPath());
 	}

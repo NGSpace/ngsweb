@@ -12,14 +12,18 @@ public class StringFolderPageServer implements PageServer {
 
 	protected AppProperties properties;
 	protected String sourcefolder;
-	private String contenttype;
-	private String key;
+	protected String contenttype;
+	protected String key;
+	protected String cleankey;
 	
 	protected StringFolderPageServer(AppProperties properties, String key, String sourcefolder, String contenttype) {
 		this.properties = properties;
 		this.key = key;
 		this.sourcefolder = sourcefolder;
 		this.contenttype = contenttype;
+		this.cleankey = key;
+		if (cleankey.endsWith("*")) cleankey = cleankey.substring(0, cleankey.length()-1);
+		System.out.println(key);
 	}
 	
 	public String processFile(String file) {
@@ -28,18 +32,20 @@ public class StringFolderPageServer implements PageServer {
 	
 	@Override
 	public byte[] getContent(HttpServletRequest request) throws Exception {
+		System.out.println(key);
+		if (request.getRequestURI().contains("hud")) {
+			NGSWebController.logger.info("Hudddddddd");
+			NGSWebController.logger.info(key);
+		}
 		
 		String uri = request.getRequestURI().replace("%20", " "); // e.g., "/foo/bar/baz"
 //		uri = uri.replaceAll("/+$", "");      // remove trailing slashes
 //		String[] parts = uri.split("/");
 //
 //		String lastSegment = parts.length > 0 ? parts[parts.length - 1] : "";
-		uri = uri.replaceFirst(Pattern.quote(key), Matcher.quoteReplacement(""));
+		uri = uri.replaceFirst(Pattern.quote(cleankey), Matcher.quoteReplacement(""));
 		
 		if (uri.isBlank()||uri.equals("/")) uri = "index.html";
-
-		System.out.println(uri);
-		System.out.println(key);
 		
 		return processFile(readFile(new File(sourcefolder + "/" + uri))).getBytes();
 	}

@@ -10,9 +10,11 @@ public class PageServerProcessor {
 	public static PageServer createPageServer(AppProperties properties, WebStructure structure, String key) {
 		String servertype = structure.getServertype();
 		Map<String, String> custom = structure.getCustom();
+		System.out.println(key);
 		return switch (servertype) {
 			case "html_folder": {
-				yield new HTMLFolderPageServer(properties, key, custom.get("headInjectFile"), custom.get("sourcefolder"));
+				yield new HTMLFolderPageServer(properties, key, custom.get("headInjectFile"), custom.get("sourcefolder"),
+						null);
 			}
 			case "css_folder": {
 				yield new StringFolderPageServer(properties, key, custom.get("sourcefolder"), "text/css");
@@ -25,6 +27,9 @@ public class PageServerProcessor {
 			}
 			case "raw_folder": {
 				yield new RawFolderPageServer(key, custom.get("sourcefolder"));
+			}
+			case "raw_file": {
+				yield new FilePageServer(custom.get("file"), custom.get("contenttype"));
 			}
 			case "html_string": {
 				yield new HTMLStringPageServer(custom.get("content"));
