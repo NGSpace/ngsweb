@@ -1,0 +1,13 @@
+2025-08-05 23:33:43 INFO  [main] dev.ngspace.ngsweb.NgswebApplication - Starting NgswebApplication using Java 21.0.8 with PID 48709 (/mnt/datassd/Projects/NNU/ngsweb/bin/main started by computer in /mnt/datassd/Projects/NNU/ngsweb)
+2025-08-05 23:33:43 INFO  [main] dev.ngspace.ngsweb.NgswebApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-05 23:33:44 INFO  [main] org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 9090 (http)
+2025-08-05 23:33:44 INFO  [main] org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9090"]
+2025-08-05 23:33:44 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-05 23:33:44 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-08-05 23:33:44 INFO  [main] org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-08-05 23:33:44 INFO  [main] org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 865 ms
+2025-08-05 23:33:44 INFO  [main] org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9090"]
+2025-08-05 23:33:44 INFO  [main] org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 9090 (http) with context path '/'
+2025-08-05 23:33:44 INFO  [main] dev.ngspace.ngsweb.NgswebApplication - Started NgswebApplication in 1.857 seconds (process running for 2.097)
+2025-08-05 23:33:57 INFO  [SpringApplicationShutdownHook] org.springframework.boot.web.embedded.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-05 23:33:57 INFO  [tomcat-shutdown] org.springframework.boot.web.embedded.tomcat.GracefulShutdown - Graceful shutdown complete

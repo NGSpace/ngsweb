@@ -1,0 +1,27 @@
+ngsweb:
+    default_title: "NGS's wonderland!"
+    webstructure:
+        "[/*]":
+            servertype: "html_folder"
+            custom:
+                headInjectFile: "injects/testinject.html"
+                sourcefolder: "testweb"
+        "[/Styles/*]":
+            servertype: "css_folder"
+            custom:
+                sourcefolder: "testweb/Styles"
+        "[/Images/*]":
+            servertype: "image_folder"
+            custom:
+                sourcefolder: "testweb/Images"
+        "[/Scripts/*]":
+            servertype: "js_folder"
+            custom:
+                sourcefolder: "testweb/Scripts"
+        "[/hudder/*]":
+            servertype: "html_folder"
+            custom:
+                headInjectFile: "injects/testinject.html"
+                sourcefolder: "testweb/hudder"
+server:
+    port: 9090
