@@ -10,11 +10,10 @@ public class PageServerProcessor {
 	public static PageServer createPageServer(AppProperties properties, WebStructure structure, String key) {
 		String servertype = structure.getServertype();
 		Map<String, String> custom = structure.getCustom();
-		System.out.println(key);
 		return switch (servertype) {
 			case "html_folder": {
 				yield new HTMLFolderPageServer(properties, key, custom.get("headInjectFile"), custom.get("sourcefolder"),
-						null);
+						custom.get("favicon"));
 			}
 			case "css_folder": {
 				yield new StringFolderPageServer(properties, key, custom.get("sourcefolder"), "text/css");

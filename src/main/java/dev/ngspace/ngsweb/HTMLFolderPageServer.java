@@ -10,16 +10,21 @@ public class HTMLFolderPageServer extends StringFolderPageServer {
 		super(properties, key, sourcefolder, "text/html");
 		this.headInjectFile = headInjectFile;
 		if (favicon==null) {
-			favicon = cleankey + "/favicon.ico";
+			favicon = "/favicon.ico";
 		}
 		this.favicon = favicon;
 	}
 
 	@Override
 	public String processFile(String file) {
-//		file = ensureTag(file, "")
 		if (!file.contains("<link rel=\"icon\" href=")) {
 			file = insertToHead(file, "<link rel=\"icon\" href=\""+favicon+"\">");
+		}
+		if (!file.contains("<title>")&&properties.getDefaultTitle()!=null) {
+			file = insertToHead(file, "<title>"+properties.getDefaultTitle()+"</title>");
+		}
+		if (headInjectFile!=null) {
+			file = insertToHead(file, headInjectFile);
 		}
 		
 		return file;

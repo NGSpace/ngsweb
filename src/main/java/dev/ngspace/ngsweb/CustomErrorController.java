@@ -1,16 +1,13 @@
 package dev.ngspace.ngsweb;
 
-import java.util.Map;
+import java.io.IOException;
 
-import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -24,14 +21,15 @@ public class CustomErrorController implements ErrorController {
     }
 
     @RequestMapping("/error")
-    public ResponseEntity<String> handleError(HttpServletRequest request) {
-        // Optionally extract error details:
-        String message = "<html><body><h1>Error</h1><p>Something went wrong.</p></body></html>";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_HTML);
-
-        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+    public ModelAndView handleError(HttpServletRequest request) {
+        ServletWebRequest servletWebRequest = new ServletWebRequest(request);
+        Throwable error = this.errorAttributes.getError(servletWebRequest);
+        
+        if (error instanceof IOException) {
+        	return new ModelAndView("404");
+        }
+        
+        return new ModelAndView("generic_error");
     }
 
     // Optional (Spring Boot 2.3+ no longer requires this method)
