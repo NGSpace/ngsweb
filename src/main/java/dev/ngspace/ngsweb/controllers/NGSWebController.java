@@ -54,7 +54,7 @@ public class NGSWebController {
 	@GetMapping("/404")
     public ResponseEntity<byte[]> erorr404(HttpServletRequest request) throws Exception {
         HttpHeaders headers = new HttpHeaders();
-		PageServer server = desktopPageServers.get("/404");
+		PageServer server = getPageServers(request).get("/404");
 
         headers.add(HttpHeaders.CONTENT_TYPE, server.getContentType(request));
         
