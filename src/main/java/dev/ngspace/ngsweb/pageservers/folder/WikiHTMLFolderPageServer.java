@@ -23,7 +23,6 @@ public class WikiHTMLFolderPageServer extends HTMLFolderPageServer {
 		contents = removeTitle(contents);
 		baseHTML = insertToTag(baseHTML, "<title>"+title+"</title>", "head");
 		contents = insertDiv(baseHTML, contents, "body", "id=\"contents\"");
-		System.out.println(contents);
 		
 		return super.processFile(contents);
 	}
