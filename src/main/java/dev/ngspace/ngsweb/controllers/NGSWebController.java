@@ -113,6 +113,7 @@ public class NGSWebController {
         String forwarded = request.getHeader("X-Forwarded-For");
         String sessionId = (request.getSession(false) != null) ? request.getSession(false).getId() : "no session";
         String user = (request.getUserPrincipal() != null) ? request.getUserPrincipal().getName() : "anonymous";
+        boolean isMobile = isMobile(request);
 
         logger.info("""
             Request received:
@@ -126,7 +127,8 @@ public class NGSWebController {
             - X-Forwarded-For: {}
             - Session ID: {}
             - Authenticated User: {}
-            """, ip, method, uri, query, userAgent, referer, language, forwarded, sessionId, user);
+            - Is-Mobile: {}""",
+            ip, method, uri, query, userAgent, referer, language, forwarded, sessionId, user, isMobile);
     }
 
 	private PageServer getPageServer(HttpServletRequest request) throws IOException {
@@ -158,7 +160,7 @@ public class NGSWebController {
 	}
 
 	private Map<String, PageServer> getPageServers(HttpServletRequest request) {
-		return appProperties.getMobileDefaultsToDesktop()&&isMobile(request) ? mobilePageServers : desktopPageServers;
+		return isMobile(request) ? mobilePageServers : desktopPageServers;
 	}
 	
 	public static boolean isMobile(HttpServletRequest req) {
