@@ -1,4 +1,4 @@
-package dev.ngspace.ngsweb;
+package dev.ngspace.ngsweb.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -13,30 +13,48 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.ngspace.ngsweb.WebConfig;
+import dev.ngspace.ngsweb.PageServer;
+import dev.ngspace.ngsweb.PageServerProcessor;
+import dev.ngspace.ngsweb.exceptions.LegitFuckupException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 public class NGSWebController {
     
 	public static final Logger logger = LoggerFactory.getLogger(NGSWebController.class);
-	public AppProperties appProperties;
-	public Map<String, PageServer> pageservers = new HashMap<String, PageServer>();
+	public WebConfig appProperties;
+	public Map<String, PageServer> desktopPageServers = new HashMap<String, PageServer>();
+	public Map<String, PageServer> mobilePageServers = new HashMap<String, PageServer>() {
+		private static final long serialVersionUID = -2114763456002592192L;
 
-    public NGSWebController(AppProperties appProperties) {
-    	this.appProperties = appProperties;
-    	for (var entry : appProperties.getWebstructure().entrySet()) {
-    		logger.info("Processing pageserver: " + entry.getKey());
-    		pageservers.put(entry.getKey(), PageServerProcessor.createPageServer(appProperties, entry.getValue(), entry.getKey()));
+		@Override public PageServer get(Object key) {
+			PageServer mobilevers = super.get(key);
+			if (appProperties.getMobileDefaultsToDesktop()&&mobilevers==null)
+				return desktopPageServers.get(key);
+			return mobilevers;
+		}
+	};
+
+    public NGSWebController(WebConfig webconf) {
+    	this.appProperties = webconf;
+    	for (var entry : webconf.getDesktopWebstructure().entrySet()) {
+    		logger.info("Processing desktop pageserver: " + entry.getKey());
+    		desktopPageServers.put(entry.getKey(), PageServerProcessor.createPageServer(webconf, entry.getValue(), entry.getKey()));
+    	}
+    	
+    	if (webconf.getMobileWebstructure()==null)
+    		return;
+    	for (var entry : webconf.getMobileWebstructure().entrySet()) {
+    		logger.info("Processing mobile pageserver: " + entry.getKey());
+    		mobilePageServers.put(entry.getKey(), PageServerProcessor.createPageServer(webconf, entry.getValue(), entry.getKey()));
     	}
     }
     
 	@GetMapping("/404")
     public ResponseEntity<byte[]> erorr404(HttpServletRequest request) throws Exception {
         HttpHeaders headers = new HttpHeaders();
-        
-		logger.info("404 For URI \"" + request.getRequestURI() + "\"");
-		PageServer server = pageservers.get("/404");
+		PageServer server = desktopPageServers.get("/404");
 
         headers.add(HttpHeaders.CONTENT_TYPE, server.getContentType(request));
         
@@ -63,7 +81,7 @@ public class NGSWebController {
     	
     	logUserInfo(request);
     	
-		if (!request.getRequestURI().endsWith("/")) {
+		if (!request.getRequestURI().endsWith("/")&&isSubFolderCatchAll(request)) {
 			String redirect = request.getRequestURI() + "/";
 			
 			return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
@@ -79,12 +97,12 @@ public class NGSWebController {
     	}
     	
         HttpHeaders headers = new HttpHeaders();
-        PageServer page = getPageServer(request.getRequestURI());
+        PageServer page = getPageServer(request);
         headers.add(HttpHeaders.CONTENT_TYPE, page.getContentType(request));
         return new ResponseEntity<byte[]>(page.getContent(request), headers, HttpStatus.OK);
     }
-    
-    public void logUserInfo(HttpServletRequest request) {
+
+	public void logUserInfo(HttpServletRequest request) {
         String ip = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
         String uri = request.getRequestURI();
@@ -111,25 +129,49 @@ public class NGSWebController {
             """, ip, method, uri, query, userAgent, referer, language, forwarded, sessionId, user);
     }
 
-	private PageServer getPageServer(String requestURI) throws IOException {
-		PageServer server = pageservers.get(requestURI);
+	private PageServer getPageServer(HttpServletRequest request) throws IOException {
+		String requestURI = request.getRequestURI();
+		PageServer server = getPageServers(request).get(requestURI);
 
+		if (server==null)
+			server = getPageServers(request).get(requestURI + (requestURI.charAt(requestURI.length()-1)=='/'?"*":"/*"));
 		if (server==null) {
-			server = pageservers.get(requestURI + (requestURI.charAt(requestURI.length()-1)=='/'?"*":"/*"));
-		}
-		if (server==null) {
-			String uri = requestURI; // e.g., "/foo/bar/baz"
-			String parentUri = uri.substring(0, uri.length()-1).replaceAll("/[^/]*$", ""); // strips last segment
+			String uri = requestURI;
+			String parentUri = uri.substring(0, uri.length()-1).replaceAll("/[^/]*$", "");
 
-			// Special case: if root "/"
-			if (parentUri.isEmpty()) {
-			    parentUri = "/";
-			}
-			logger.info(parentUri);
-			server = pageservers.get(parentUri + (parentUri.charAt(parentUri.length()-1)=='/'?"*":"/*"));
+			if (parentUri.isEmpty())
+				parentUri = "/";
+			server = getPageServers(request).get(parentUri + (parentUri.charAt(parentUri.length()-1)=='/'?"*":"/*"));
 		}
 		if (server==null)
 			throw new IOException("No PageServer defined for URI: " + requestURI);
 		return server;
 	}
+    
+    private boolean isSubFolderCatchAll(HttpServletRequest request) {
+		String requestURI = request.getRequestURI();
+		PageServer server = getPageServers(request).get(requestURI);
+
+		if (server==null)
+			return getPageServers(request).get(requestURI + (requestURI.charAt(requestURI.length()-1)=='/'?"*":"/*"))!=null;
+		return false;
+	}
+
+	private Map<String, PageServer> getPageServers(HttpServletRequest request) {
+		return appProperties.getMobileDefaultsToDesktop()&&isMobile(request) ? mobilePageServers : desktopPageServers;
+	}
+	
+	public static boolean isMobile(HttpServletRequest req) {
+	    String agent = req.getHeader("User-Agent");
+	    if (agent == null) return false;
+	    agent = agent.toLowerCase();
+	    
+	    return agent.contains("mobi")
+	   	     || agent.contains("android")
+		     || agent.contains("iphone")
+		     || agent.contains("ipod")
+		     || agent.contains("blackberry")
+		     || agent.contains("windows phone");
+	}
+
 }

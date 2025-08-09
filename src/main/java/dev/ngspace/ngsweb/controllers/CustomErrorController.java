@@ -1,4 +1,4 @@
-package dev.ngspace.ngsweb;
+package dev.ngspace.ngsweb.controllers;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 public class CustomErrorController implements ErrorController {
 
-    private final ErrorAttributes errorAttributes;
+    protected final ErrorAttributes errorAttributes;
 
     public CustomErrorController(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes;
@@ -23,17 +23,14 @@ public class CustomErrorController implements ErrorController {
     @RequestMapping("/error")
     public ModelAndView handleError(HttpServletRequest request) {
         ServletWebRequest servletWebRequest = new ServletWebRequest(request);
-        Throwable error = this.errorAttributes.getError(servletWebRequest);
+        Throwable error = errorAttributes.getError(servletWebRequest);
         
         if (error instanceof IOException) {
+        	NGSWebController.logger.error("404 error");
         	return new ModelAndView("404");
         }
-        
-        return new ModelAndView("generic_error");
-    }
 
-    // Optional (Spring Boot 2.3+ no longer requires this method)
-    public String getErrorPath() {
-        return "/error";
+    	NGSWebController.logger.error("Generic error");
+        return new ModelAndView("generic_error");
     }
 }

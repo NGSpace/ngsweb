@@ -1,11 +1,11 @@
-package dev.ngspace.ngsweb;
+package dev.ngspace.ngsweb.pageservers.folder;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 public class ImageFolderPageServer extends RawFolderPageServer {
 
-	protected ImageFolderPageServer(String key, String sourcefolder) {
-		super(key, sourcefolder);
+	public ImageFolderPageServer(String key, String sourcefolder, String fallbackpath) {
+		super(key, sourcefolder, fallbackpath);
 	}
 	
 	@Override

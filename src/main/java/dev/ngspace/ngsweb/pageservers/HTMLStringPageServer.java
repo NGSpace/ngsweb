@@ -1,5 +1,6 @@
-package dev.ngspace.ngsweb;
+package dev.ngspace.ngsweb.pageservers;
 
+import dev.ngspace.ngsweb.PageServer;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class HTMLStringPageServer implements PageServer {
