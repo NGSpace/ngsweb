@@ -10,9 +10,9 @@ public class WikiHTMLFolderPageServer extends HTMLFolderPageServer {
 
 	protected String baseFile;
 
-	public WikiHTMLFolderPageServer(WebConfig properties, String key, String headInjectFile, String sourcefolder,
+	public WikiHTMLFolderPageServer(WebConfig properties, String key, String headInjectFile, String[] sources,
 			String favicon, String fallbackpath, String baseFile) {
-		super(properties, key, headInjectFile, sourcefolder, favicon, fallbackpath);
+		super(properties, key, headInjectFile, sources, favicon, fallbackpath);
 		this.baseFile = baseFile;
 	}
 	

@@ -11,9 +11,9 @@ public class HTMLFolderPageServer extends StringFolderPageServer {
 	protected String headInjectFile;
 	private String favicon;
 	
-	public HTMLFolderPageServer(WebConfig properties, String key, String headInjectFile, String sourcefolder,
+	public HTMLFolderPageServer(WebConfig properties, String key, String headInjectFile, String[] sources,
 			String favicon, String fallbackpath) {
-		super(properties, key, sourcefolder, "text/html", fallbackpath);
+		super(properties, key, sources, "text/html", fallbackpath);
 		this.headInjectFile = headInjectFile;
 		if (favicon==null) {
 			favicon = "/favicon.ico";

@@ -59,7 +59,7 @@ public class WebConfig {
 	
 	public static class WebStructure {
 		private String servertype;
-		private Map<String, String> custom = new HashMap<>();
+		private Map<String, Object> custom = new HashMap<>();
 		
 		public String getServertype() {
 			return servertype;
@@ -69,11 +69,11 @@ public class WebConfig {
 			this.servertype = servertype;
 		}
 		
-		public Map<String, String> getCustom() {
+		public Map<String, Object> getCustom() {
 			return custom;
 		}
 		
-		public void setCustom(Map<String, String> custom) {
+		public void setCustom(Map<String, Object> custom) {
 			this.custom = custom;
 		}
 	}

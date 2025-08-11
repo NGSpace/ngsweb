@@ -1,5 +1,7 @@
 package dev.ngspace.ngsweb;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import dev.ngspace.ngsweb.WebConfig.WebStructure;
@@ -17,39 +19,61 @@ public class PageServerProcessor {
 	
 	public static PageServer createPageServer(WebConfig properties, WebStructure structure, String key) {
 		String servertype = structure.getServertype();
-		Map<String, String> custom = structure.getCustom();
+		Map<String, Object> custom = structure.getCustom();
 		return switch (servertype) {
 			case "html_folder": {
-				yield new HTMLFolderPageServer(properties, key, custom.get("headInjectFile"),
-						custom.get("sourcefolder"), custom.get("favicon"), custom.get("fallbackpath"));
+				yield new HTMLFolderPageServer(properties, key, (String) custom.get("headInjectFile"),
+						getSrc(custom), (String) custom.get("favicon"), (String) custom.get("fallbackpath"));
 			}
 			case "wiki_folder": {
-				yield new WikiHTMLFolderPageServer(properties, key, custom.get("headInjectFile"),
-						custom.get("sourcefolder"), custom.get("favicon"), custom.get("fallbackpath"),
-						custom.get("base_file"));
+				yield new WikiHTMLFolderPageServer(properties, key, (String) custom.get("headInjectFile"),
+						getSrc(custom), (String) custom.get("favicon"), (String) custom.get("fallbackpath"),
+						(String) custom.get("base_file"));
 			}
 			case "css_folder": {
-				yield new StringFolderPageServer(properties, key, custom.get("sourcefolder"), "text/css",
-						custom.get("fallbackpath"));
+				yield new StringFolderPageServer(properties, key, getSrc(custom), "text/css",
+						(String) custom.get("fallbackpath"));
 			}
 			case "js_folder": {
-				yield new StringFolderPageServer(properties, key, custom.get("sourcefolder"), "text/javascript",
-						custom.get("fallbackpath"));
+				yield new StringFolderPageServer(properties, key, getSrc(custom), "text/javascript",
+						(String) custom.get("fallbackpath"));
 			}
 			case "image_folder": {
-				yield new ImageFolderPageServer(key, custom.get("sourcefolder"), custom.get("fallbackpath"));
+				yield new ImageFolderPageServer(key, getSrc(custom), (String) custom.get("fallbackpath"));
 			}
 			case "raw_folder": {
-				yield new RawFolderPageServer(key, custom.get("sourcefolder"), custom.get("fallbackpath"));
+				yield new RawFolderPageServer(key, getSrc(custom), (String) custom.get("fallbackpath"));
 			}
 			case "raw_file": {
-				yield new FilePageServer(custom.get("file"), custom.get("contenttype"));
+				yield new FilePageServer((String) custom.get("file"), (String) custom.get("contenttype"));
 			}
 			case "html_string": {
-				yield new HTMLStringPageServer(custom.get("content"));
+				yield new HTMLStringPageServer((String) custom.get("content"));
 			}
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + servertype);
 		};
+	}
+
+	private static String[] getSrc(Map<String, Object> custom) {
+		Object obj = custom.get("source_folders");
+		if (obj instanceof String s)
+			return new String[] {s};
+		if (obj instanceof List<?> list) {
+			String[] arr = new String[list.size()];
+			for (int i = 0; i < list.size(); i++) {
+			    arr[i] = (String) list.get(i);
+			}
+		}
+		if (obj instanceof LinkedHashMap<?, ?> map) {
+			var set = map.entrySet();
+			String[] arr = new String[map.size()];
+			int i = 0;
+			for (var o : set) {
+				arr[i++] = (String) o.getValue();
+			}
+			return arr;
+		}
+		throw new IllegalArgumentException("Custom.source_folders can not be of type: " + obj.getClass());
 	}
 }

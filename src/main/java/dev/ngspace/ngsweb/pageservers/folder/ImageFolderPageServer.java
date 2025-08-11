@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public class ImageFolderPageServer extends RawFolderPageServer {
 
-	public ImageFolderPageServer(String key, String sourcefolder, String fallbackpath) {
-		super(key, sourcefolder, fallbackpath);
+	public ImageFolderPageServer(String key, String[] sources, String fallbackpath) {
+		super(key, sources, fallbackpath);
 	}
 	
 	@Override

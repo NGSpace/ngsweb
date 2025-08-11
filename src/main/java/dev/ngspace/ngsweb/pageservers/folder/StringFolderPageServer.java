@@ -10,9 +10,9 @@ public class StringFolderPageServer extends RawFolderPageServer {
 	protected WebConfig properties;
 	protected String contenttype;
 	
-	public StringFolderPageServer(WebConfig properties, String key, String sourcefolder, String contenttype,
+	public StringFolderPageServer(WebConfig properties, String key, String[] sources, String contenttype,
 			String fallbackpath) {
-		super(key, sourcefolder, fallbackpath);
+		super(key, sources, fallbackpath);
 		this.properties = properties;
 		this.contenttype = contenttype;
 	}
