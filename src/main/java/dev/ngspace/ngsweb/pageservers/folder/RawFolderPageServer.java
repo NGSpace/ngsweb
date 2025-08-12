@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import dev.ngspace.ngsweb.PageServer;
-import dev.ngspace.ngsweb.controllers.NGSWebController;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class RawFolderPageServer implements PageServer {
@@ -43,6 +42,9 @@ public class RawFolderPageServer implements PageServer {
 		
 		for (String source : sources) {
 			File file = new File(source + "/" + uri);
+			if (file.exists())
+				return Files.readAllBytes(file.toPath());
+			file = new File(source + "/" + uri + ".html");
 			if (file.exists())
 				return Files.readAllBytes(file.toPath());
 		}

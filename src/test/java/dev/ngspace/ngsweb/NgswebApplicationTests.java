@@ -5,9 +5,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class NgswebApplicationTests {
-
 	@Test
 	void contextLoads() {
+		/* Do this eventually */
 	}
-
 }
