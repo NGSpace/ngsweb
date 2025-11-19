@@ -9,7 +9,7 @@ public class ImageFolderPageServer extends RawFolderPageServer {
 	}
 	
 	@Override
-	public String getContentType(HttpServletRequest request) {
+	public String getContentType(HttpServletRequest request, String URI) {
 		String filename = request.getRequestURI();
 		return switch (filename.substring(filename.lastIndexOf('.') + 1)) {
 			case "jpg","jpeg" -> "image/jpeg";

@@ -22,12 +22,12 @@ public class StringFolderPageServer extends RawFolderPageServer {
 	}
 	
 	@Override
-	public byte[] getContent(HttpServletRequest request) throws IOException {
-		return processFile(new String(super.getContent(request))).getBytes();
+	public byte[] getContent(HttpServletRequest request, String URI) throws IOException {
+		return processFile(new String(super.getContent(request, URI))).getBytes();
 	}
 
 	@Override
-	public String getContentType(HttpServletRequest request) {
+	public String getContentType(HttpServletRequest request, String URI) {
 		return contenttype;
 	}
 }

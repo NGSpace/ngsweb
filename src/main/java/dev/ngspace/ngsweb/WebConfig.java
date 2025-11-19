@@ -12,6 +12,8 @@ public class WebConfig {
 
 	private String defaultTitle;
 	private boolean mobileDefaultsToDesktop;
+	private boolean generateSitemap;
+	private String sitemapUrl;
 	private Map<String, WebStructure> desktop_webstructure = new HashMap<>();
 	private Map<String, WebStructure> mobile_webstructure = new HashMap<>();
 	
@@ -37,6 +39,16 @@ public class WebConfig {
 	
 	
 	
+	public boolean isGenerateSitemap() {
+		return generateSitemap;
+	}
+
+	public void setGenerateSitemap(boolean generateSitemap) {
+		this.generateSitemap = generateSitemap;
+	}
+	
+	
+	
 	public Map<String, WebStructure> getDesktopWebstructure() {
 		return desktop_webstructure;
 	}
@@ -57,6 +69,16 @@ public class WebConfig {
 	
 	
 	
+	public String getSitemapUrl() {
+		return sitemapUrl;
+	}
+
+	public void setSitemapUrl(String sitemapUrl) {
+		this.sitemapUrl = sitemapUrl;
+	}
+
+
+
 	public static class WebStructure {
 		private String servertype;
 		private Map<String, Object> custom = new HashMap<>();

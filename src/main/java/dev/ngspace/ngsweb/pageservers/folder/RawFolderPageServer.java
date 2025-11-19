@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +28,7 @@ public class RawFolderPageServer implements PageServer {
 	}
 
 	@Override
-	public String getContentType(HttpServletRequest request) {
+	public String getContentType(HttpServletRequest request, String URI) {
 		return "application/octet-stream";//IDK what this means but apparently that's the one for raw data.
 	}
 	
@@ -35,8 +37,8 @@ public class RawFolderPageServer implements PageServer {
 	}
 
 	@Override
-	public byte[] getContent(HttpServletRequest request) throws IOException {
-		String uri = request.getRequestURI().replace("%20", " ");
+	public byte[] getContent(HttpServletRequest request, String URI) throws IOException {
+		String uri = URI.replace("%20", " ");
 		uri = uri.replaceFirst(Pattern.quote(cleankey), Matcher.quoteReplacement(""));
 		if (uri.isBlank()||uri.equals("/")) uri = fallbackpath;
 		
@@ -48,7 +50,19 @@ public class RawFolderPageServer implements PageServer {
 			if (file.exists())
 				return Files.readAllBytes(file.toPath());
 		}
-		throw new FileNotFoundException("File not found for URI: " + uri);
+		throw new FileNotFoundException("File not found for URI: " + uri + "\n" + request.getRequestURI());
+	}
+
+	@Override
+	public List<String> getPages(HttpServletRequest request, String key) {
+		List<String> strings = new ArrayList<String>();
+		for (String source : sources) {
+			File folder = new File(source);
+			for (String page : folder.list()) {
+				strings.add(cleankey + "/" + page);
+			}
+		}
+		return strings;
 	}
 	
 }
