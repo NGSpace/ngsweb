@@ -6,11 +6,11 @@ import java.nio.file.Path;
 
 import dev.ngspace.ngsweb.WebConfig;
 
-public class WikiHTMLFolderPageServer extends HTMLFolderPageServer {
+public class TemplateHTMLFolderPageServer extends HTMLFolderPageServer {
 
 	protected String baseFile;
 
-	public WikiHTMLFolderPageServer(WebConfig properties, String key, String headInjectFile, String[] sources,
+	public TemplateHTMLFolderPageServer(WebConfig properties, String key, String headInjectFile, String[] sources,
 			String favicon, String fallbackpath, String baseFile) {
 		super(properties, key, headInjectFile, sources, favicon, fallbackpath);
 		this.baseFile = baseFile;

@@ -11,7 +11,7 @@ import dev.ngspace.ngsweb.pageservers.folder.HTMLFolderPageServer;
 import dev.ngspace.ngsweb.pageservers.folder.ImageFolderPageServer;
 import dev.ngspace.ngsweb.pageservers.folder.RawFolderPageServer;
 import dev.ngspace.ngsweb.pageservers.folder.StringFolderPageServer;
-import dev.ngspace.ngsweb.pageservers.folder.WikiHTMLFolderPageServer;
+import dev.ngspace.ngsweb.pageservers.folder.TemplateHTMLFolderPageServer;
 
 public class PageServerProcessor {
 	private PageServerProcessor() {
@@ -25,10 +25,10 @@ public class PageServerProcessor {
 				yield new HTMLFolderPageServer(properties, key, (String) custom.get("headInjectFile"),
 						getSrc(custom), (String) custom.get("favicon"), (String) custom.get("fallbackpath"));
 			}
-			case "wiki_folder": {
-				yield new WikiHTMLFolderPageServer(properties, key, (String) custom.get("headInjectFile"),
+			case "template_folder": {
+				yield new TemplateHTMLFolderPageServer(properties, key, (String) custom.get("headInjectFile"),
 						getSrc(custom), (String) custom.get("favicon"), (String) custom.get("fallbackpath"),
-						(String) custom.get("base_file"));
+						(String) custom.get("template"));
 			}
 			case "css_folder": {
 				yield new StringFolderPageServer(properties, key, getSrc(custom), "text/css",
@@ -51,7 +51,7 @@ public class PageServerProcessor {
 				yield new HTMLStringPageServer((String) custom.get("content"));
 			}
 			default:
-				throw new IllegalArgumentException("Unexpected value: " + servertype);
+				throw new IllegalArgumentException("No page-server type: " + servertype);
 		};
 	}
 

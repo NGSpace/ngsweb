@@ -87,7 +87,8 @@ public class NGSWebController {
     	
         List<String> urls = new ArrayList<String>();
         for (var v : getPageServers(request).entrySet())
-        	urls.addAll(v.getValue().getPages(request, v.getKey()).stream().map(s->config.getSitemapUrl()+s).toList());
+        	urls.addAll(v.getValue().getSitemapPages(request, v.getKey()).stream().map(s->config.getSitemapUrl()+s).toList());
+        urls.removeAll(List.of(config.getSitemapExclusions()));
 
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");

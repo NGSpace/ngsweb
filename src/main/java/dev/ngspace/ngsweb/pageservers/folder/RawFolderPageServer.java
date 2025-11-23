@@ -54,7 +54,7 @@ public class RawFolderPageServer implements PageServer {
 	}
 
 	@Override
-	public List<String> getPages(HttpServletRequest request, String key) {
+	public List<String> getSitemapPages(HttpServletRequest request, String key) {
 		List<String> strings = new ArrayList<String>();
 		for (String source : sources) {
 			File folder = new File(source);

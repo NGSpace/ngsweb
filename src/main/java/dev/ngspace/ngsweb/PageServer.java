@@ -9,5 +9,5 @@ public interface PageServer {
 
 	public byte[] getContent(HttpServletRequest request, String URI) throws Exception;
 	
-	public List<String> getPages(HttpServletRequest request, String key);
+	public List<String> getSitemapPages(HttpServletRequest request, String key);
 }

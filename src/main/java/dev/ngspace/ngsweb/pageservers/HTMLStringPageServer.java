@@ -24,7 +24,7 @@ public class HTMLStringPageServer implements PageServer {
 	}
 
 	@Override
-	public List<String> getPages(HttpServletRequest request, String key) {
+	public List<String> getSitemapPages(HttpServletRequest request, String key) {
 		return List.of(key);
 	}
 }
