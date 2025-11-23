@@ -7,6 +7,7 @@ import java.util.Map;
 import dev.ngspace.ngsweb.WebConfig.WebStructure;
 import dev.ngspace.ngsweb.pageservers.FilePageServer;
 import dev.ngspace.ngsweb.pageservers.HTMLStringPageServer;
+import dev.ngspace.ngsweb.pageservers.NullPageServer;
 import dev.ngspace.ngsweb.pageservers.folder.HTMLFolderPageServer;
 import dev.ngspace.ngsweb.pageservers.folder.ImageFolderPageServer;
 import dev.ngspace.ngsweb.pageservers.folder.RawFolderPageServer;
@@ -49,6 +50,9 @@ public class PageServerProcessor {
 			}
 			case "html_string": {
 				yield new HTMLStringPageServer((String) custom.get("content"));
+			}
+			case "null_page": {
+				yield new NullPageServer((String) custom.get("contenttype"));
 			}
 			default:
 				throw new IllegalArgumentException("No page-server type: " + servertype);
