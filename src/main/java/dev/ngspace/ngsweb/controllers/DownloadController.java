@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
-@RequestMapping("/download/*")
+@RequestMapping("/download/**")
 public class DownloadController {
 	private Path source = null;
 	
