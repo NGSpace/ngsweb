@@ -14,6 +14,7 @@ public class WebConfig {
 	private boolean mobileDefaultsToDesktop;
 	private boolean generateSitemap = false;
 	private String sitemapUrl = "";
+	private String downloadSource = null;
 	private String[] sitemapExclusions = {};
 	private Map<String, WebStructure> desktop_webstructure = new HashMap<>();
 	private Map<String, WebStructure> mobile_webstructure = new HashMap<>();
@@ -86,6 +87,16 @@ public class WebConfig {
 
 	public void setSitemapExclusions(String[] sitemapExclusions) {
 		this.sitemapExclusions = sitemapExclusions;
+	}
+
+
+
+	public String getDownloadSource() {
+		return downloadSource;
+	}
+
+	public void setDownloadSource(String source) {
+		this.downloadSource = source;
 	}
 
 

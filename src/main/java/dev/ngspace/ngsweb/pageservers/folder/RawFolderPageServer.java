@@ -38,6 +38,13 @@ public class RawFolderPageServer implements PageServer {
 
 	@Override
 	public byte[] getContent(HttpServletRequest request, String URI) throws IOException {
+		byte[] content = getContentSafe(URI);
+		if (content.length==0)
+			throw new FileNotFoundException("File not found for URI: " + URI + "\n" + request.getRequestURI());
+		return content;
+	}
+
+	protected byte[] getContentSafe(String URI) throws IOException {
 		String uri = URI.replace("%20", " ");
 		uri = uri.replaceFirst(Pattern.quote(cleankey), Matcher.quoteReplacement(""));
 		if (uri.isBlank()||uri.equals("/")) uri = fallbackpath;
@@ -50,7 +57,7 @@ public class RawFolderPageServer implements PageServer {
 			if (file.exists())
 				return Files.readAllBytes(file.toPath());
 		}
-		throw new FileNotFoundException("File not found for URI: " + uri + "\n" + request.getRequestURI());
+		return new byte[0];
 	}
 
 	@Override

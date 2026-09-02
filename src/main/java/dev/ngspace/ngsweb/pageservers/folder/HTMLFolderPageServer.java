@@ -22,7 +22,15 @@ public class HTMLFolderPageServer extends StringFolderPageServer {
 	}
 
 	@Override
-	public String processFile(String file) throws IOException {
+	public String processFile( String file) throws IOException {
+//		int ind = file.indexOf("<ngsweb:");
+//		while (ind!=-1) {
+//			int endind = file.indexOf(">", ind);
+//			String function = file.substring(ind + 8, endind);
+//			file = file.substring(0, ind) + file.substring(endind+1);
+//			file = processFunction(function, file, ind);
+//			ind = file.indexOf("<ngsweb:", endind);
+//		}
 		if (!file.contains("<link rel=\"icon\" href="))
 			file = insertToTag(file, "<link rel=\"icon\" href=\""+favicon+"\">", "head");
 		if (!file.contains("<title>")&&properties.getDefaultTitle()!=null)
@@ -32,7 +40,18 @@ public class HTMLFolderPageServer extends StringFolderPageServer {
 		
 		return file;
 	}
-	
+//	
+//	private String processFunction(String function, String file, int ind) throws IOException {
+//		String[] parameters = function.split(" ");
+//		if (function.startsWith("include")) {
+//			StringBuilder builder = new StringBuilder(file);
+//			System.out.println(new String(getContentSafe(parameters[1])));
+//			builder.insert(ind, new String(getContentSafe(parameters[1])));
+//			return builder.toString();
+//		}
+//		throw new IllegalArgumentException("Unknown ngsweb function: " + parameters[0]);
+//	}
+
 	public String insertToTag(String html, String insertion, String tag) {
 	    if (html == null || tag == null) return html;
 
