@@ -20,21 +20,38 @@ import jakarta.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/download/*")
 public class DownloadController {
-    private Path source = null;
-
+	private Path source = null;
+	
 	public DownloadController(WebConfig webconf) {
 		var srcpath = webconf.getDownloadSource();
-		if (srcpath!=null)
-			this.source = Paths.get(srcpath);
-    }
+		if (srcpath != null)
+			this.source = Paths.get(srcpath).toAbsolutePath().normalize();
+	}
 	
 	@GetMapping
 	public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		if (source==null)
+		if (source == null)
 			throw new IOException("This instance does not allow downloading files");
 		
-		// The file to be downloaded.
-		Path file = source.resolve(request.getRequestURI().substring("/download/".length()));
+		String uri = request.getRequestURI();
+		
+		if (!uri.startsWith("/download/")) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		String requested = uri.substring("/download/".length());
+		
+		Path file = source.resolve(requested).normalize();
+		
+		// Ensure the resolved path is still inside the download directory
+		if (!file.startsWith(source)) {
+			response.sendError(HttpServletResponse.SC_FORBIDDEN);
+			return;
+		}
+		
+		if (!Files.exists(file) || !Files.isRegularFile(file)) {
+			throw new IOException("File not found");
+		}
 		
 		// Get the media type of the file
 		String contentType = Files.probeContentType(file);
